@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="styles/styles.css">
+    <title>Maxwell cars</title>
+</head>
+<body>
+    <header class="header-style">Maxwell cars</header>
+    <main>
+        <nav class="hidden-element">
+            <div>date</div>
+            <div>
+                <button class="nav-btn">Catalog</button>
+                <button class="nav-btn">Sell</button>
+                <button class="nav-btn">Buy</button>
+            </div>
+            <button class="btn red-border">New car</button>
+        </nav>
+        <section class="users-info">
+            <form action="/login" method="POST" class="form-style">
+                <label for="userlogin">Username or email:</label><br>
+                <input type="text" id="userlogin" name="userlogin" value="gaby"><br>
+                <label for="password">Password</label><br>
+                <input type="password" id="password" name="password" value="pass"><br>
+                <input type="submit" value="Sign in"><br>
+                <input type="submit" value="Sign up">
+            </form>
+            <div>
+                <button class="btn red-btn">Sign in</button>
+                <button>Sign up</button>
+            </div>
+            <form action="/users" method="POST" class="hidden-element">
+                <label for="username">Username:</label><br>
+                <input type="text" id="username" name="username" value="gaby"><br>
+                <label for="realname">First and last name:</label><br>
+                <input type="text" id="realname" name="realname" value="Gabriella Martinez"><br>
+                <label for="email">Email</label><br>
+                <input type="email" id="email" name="email" value="gaby@gmail.com"><br>
+                <label for="phone">Phone</label><br>
+                <input type="tel" id="phone" name="phone" value="1125258955"><br>
+                <label for="adress">Adress</label><br>
+                <input type="text" id="adress" name="adress" value="Av. Casanova"><br>
+                <label for="password">Password</label><br>
+                <input type="password" id="password" name="password" value="password"><br>
+            </form>
+            <div class="hidden-element">
+                <button>Register</button>
+                <button>Sign in</button>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

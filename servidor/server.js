@@ -13,15 +13,12 @@ app.get('/', (req, res) => {
     res.send('welcome')
 });
 
-
-
-
 const cars = [
     {
-        id: '1',
+        id: 1,
         model: 'toyota'
     }, {
-        id: '2',
+        id: 2,
         model: 'ford'
     },
 ]
@@ -39,7 +36,7 @@ app.post('/cars', (req, res) => {
 app.get('/cars/:indice', (req, res) => {
     const { indice } = req.params;
     console.log(indice)
-    const findCarID = cars.find(item => item.id === indice);
+    const findCarID = cars.find(item => item.id == indice);
     console.log(findCarID)
     if (!findCarID) {
         return res.status(404).send('Car not found');
@@ -61,4 +58,3 @@ app.use(function(err, req, res, next) {
 app.listen(3000, () => {
     console.log('Server init')
 });
-
