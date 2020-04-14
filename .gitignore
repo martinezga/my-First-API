@@ -1,6 +1,5 @@
 # Dependency directories
 node_modules/
-servidor/users-content.js
-servidor/usar funciones.js
-servidor/test.sql
-servidor/mysql.js
+server/usar funciones.js
+server/test.sql
+server/mysql.js
