@@ -1,48 +1,31 @@
+const { showUsers, verifyEmail, createUsers, modifyUsers } = require('./functions');
+
 const express = require('express');
 const bodyParser = require('body-parser');
+const Sequelize = require('sequelize');
 
 const app = express();
+const seq = new Sequelize('mysql://root:@localhost:3306/databasetest');
+
+seq
+  .authenticate().then(() => {
+    console.log('Connection has been established successfully.');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
 
 app.use(bodyParser.json());
 
-app.post('/algo', (req, res) => {
-    res.json(req.body);
-})
-
 app.get('/', (req, res) => {
-    res.send('welcome')
+    res.send('Welcome')
 });
 
-const cars = [
-    {
-        id: 1,
-        model: 'toyota'
-    }, {
-        id: 2,
-        model: 'ford'
-    },
-]
+app.get('/users', showUsers);
 
-app.get('/cars', (req, res) => {
-    res.json(cars);
-});
+app.post('/users', verifyEmail, createUsers);
 
-app.post('/cars', (req, res) => {
-    cars.push(req.body);
-    console.log('New car pushed to array');
-    res.json(req.body);
-})
-
-app.get('/cars/:indice', (req, res) => {
-    const { indice } = req.params;
-    console.log(indice)
-    const findCarID = cars.find(item => item.id == indice);
-    console.log(findCarID)
-    if (!findCarID) {
-        return res.status(404).send('Car not found');
-    }
-    res.send(findCarID)
-})
+app.put('/users/:userEmail', modifyUsers);
 
 app.get('/error', (req, res) => {
     res.status(500);

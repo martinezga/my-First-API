@@ -10,15 +10,17 @@ app.get('/', (req, res) => {
     res.send('welcome')
 });
 
-const firma = 'miPassword';
+const mySign = 'mySuperPassword';
 
 let usersArray = [
     {
         id: 1,
-        name: 'gaby',
-        lastName: 'martinez',
+        userName: 'gaby',
+        realName: 'martinez',
         email: 'lalala@gmail.com',
-        password: 'pass'
+        phone: 1234,
+        address: 'lals',
+        registerPassword: 'gabyPassword'
     }
 ];
 
@@ -51,8 +53,18 @@ app.put('/users/:userEmail', (req, res) => {
 });
 //predicate, some
 
+function validateUserAndPassword(user, email) {
+    const filterUser = usersArray.find(search => user.search === req.body.userName && search.email === req.body.email )
+    if (!filterUser) {
+        return false
+    }
+    return filterUser;
+}
+
 app.post('/login', (req, res) => {
-    const token = jwt.sign(usersArray, firma);
+    const {userName, registerPassword} = req.body;
+
+    const token = jwt.sign(usersArray, mySign);
     res.json({ token })
 })
 
