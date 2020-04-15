@@ -1,16 +1,16 @@
 let usersArray = [
     {
-        id: 1,
-        name: 'gaby',
-        lastName: 'martinez',
+        usersId: 1,
+        username: 'gaby',
+        fullname: 'martinez',
         email: 'lalala@gmail.com',
-        password: 'pass'
+        phone: 1125259090,
+        address: 'fifth avenue',
+        usersPassword: 'pass',
+        usersRole: '',
     }
 ];
 module.exports = {
-    showUsers: (req, res) => {
-        res.json(usersArray)
-    },
     verifyEmail: function(req, res, next) {
         const verifyEmail = usersArray.find(user => user.email === req.body.email);
         if( verifyEmail ) {

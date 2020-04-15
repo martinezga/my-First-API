@@ -1,19 +1,10 @@
-const { showUsers, verifyEmail, createUsers, modifyUsers } = require('./functions');
+const { verifyEmail, createUsers, modifyUsers } = require('./functions');
+const { createCustomers, getCustomers } = require('./mysql2');
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const Sequelize = require('sequelize');
 
 const app = express();
-const seq = new Sequelize('mysql://root:@localhost:3306/databasetest');
-
-seq
-  .authenticate().then(() => {
-    console.log('Connection has been established successfully.');
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err);
-  });
 
 app.use(bodyParser.json());
 
@@ -21,9 +12,9 @@ app.get('/', (req, res) => {
     res.send('Welcome')
 });
 
-app.get('/users', showUsers);
+app.post('/customers', createCustomers);
 
-app.post('/users', verifyEmail, createUsers);
+app.get('/customers', getCustomers);
 
 app.put('/users/:userEmail', modifyUsers);
 
