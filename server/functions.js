@@ -15,10 +15,6 @@ let usersArray = [
     }
 ];
 module.exports = {
-    loginUser: (req, res) => {
-        const token = jwt.sign(usersArray, mySignature);
-        res.json({ token })
-    },
     verifyEmail: function(req, res, next) {
         const verifyEmail = usersArray.find(user => user.email === req.body.email);
         if( verifyEmail ) {

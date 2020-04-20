@@ -1,5 +1,5 @@
-const { createUsers, modifyUsers, loginUser } = require('./functions');
-const { verifyUsername, verifyEmail, createCustomers, getCustomers, createProducts, getProducts, modifyProducts, verifyProducts } = require('./mysql2');
+const { createUsers, modifyUsers } = require('./functions');
+const { verifyUserAndMail, validateUserAndPass, verifyProducts, createProducts, getProducts, modifyProducts, createCustomers, getCustomers, loginUser} = require('./mysql2');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -20,13 +20,13 @@ app.get('/products/:productsName', verifyProducts);
 
 //app.put('products/:productsName', verifyProducts, modifyProducts)
 
-app.post('/customers', verifyUsername, verifyEmail, createCustomers);
+app.post('/customers', verifyUserAndMail, createCustomers);
 
 app.get('/customers', getCustomers);
 
 app.put('/customers/:email', modifyUsers);
 
-app.post('/login', loginUser);
+app.post('/login', validateUserAndPass, loginUser);
 
 app.get('/error', (req, res) => {
     res.status(500);
