@@ -1,3 +1,7 @@
+const jwt = require('jsonwebtoken')
+
+const mySignature = 'q2wEsup3rPAssword075';
+
 let usersArray = [
     {
         usersId: 1,
@@ -11,6 +15,10 @@ let usersArray = [
     }
 ];
 module.exports = {
+    loginUser: (req, res) => {
+        const token = jwt.sign(usersArray, mySignature);
+        res.json({ token })
+    },
     verifyEmail: function(req, res, next) {
         const verifyEmail = usersArray.find(user => user.email === req.body.email);
         if( verifyEmail ) {
