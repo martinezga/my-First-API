@@ -1,4 +1,4 @@
-const { createProduct, getProducts, getProductById, updateProducts, deleteProducts, verifyUserAndMail, validateUserAndPass,  modifyProducts, createCustomers, getCustomers, loginUser, authenticateUser} = require('./functions');
+const { createProduct, getProducts, getProductById, updateProducts, deleteProducts, verifyUserAndMail, validateUserAndPass,  modifyProducts, createUsers, getCustomers, loginUser, authenticateUser} = require('./functions');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -21,7 +21,7 @@ app.put('/products/:productId', updateProducts);/*admin*/
 
 app.delete('/products/:productId', deleteProducts)/*admin*/
 
-app.post('/customers', verifyUserAndMail, createCustomers);
+app.post('/customers', verifyUserAndMail, createUsers);//hasta aqui
 
 app.get('/customers', getCustomers);/*admin*/
 

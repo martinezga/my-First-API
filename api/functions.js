@@ -14,26 +14,17 @@ const mySignature = 'q2wEsup3rPAssword075';
 
 module.exports = {
    createProduct: (req, res) => {
-        const foundProduct = seq.query('SELECT productName FROM products WHERE productName = :productName', 
-        { replacements: req.body, type: seq.QueryTypes.SELECT })
-        .then(results => {
-            const {productName} = results[0] || {}
-            if ( productName === req.body.productName) {
-                res.status(201).end('Product already exist.')
-            } else {
-                seq.query( 'INSERT INTO products (productName, price, units) VALUES (:productName, :price, :units) ', 
-                    { replacements: req.body })
-                    .then(res.status(201).end('Product successfully created.') )
-                    .catch(error => console.log(error) || res.status(400).end('Invalid data') )
-            }
-        })
+        seq.query( 'INSERT INTO products (productName, price, units) VALUES (:productName, :price, :units) ', 
+            { replacements: req.body })
+            .then(res.status(201).end('Product successfully created.') )
+            .catch(error => console.log(error) || res.status(400).end('Invalid data') )
     },
 
     getProducts: (req, res) => 
         seq.query('SELECT * FROM products').then(rows => res.status(200).json(rows[0])),
 
     verifyProductId: (req, res) => {
-        s
+        console.log('verifiedId')
     },
     
     getProductById: (req, res) => {
@@ -55,11 +46,33 @@ module.exports = {
             .then(results => res.status(201).json('Product successfully deleted'))
     },
 
-    createCustomers: (req, res) => {
+    verifyUserAndMail: (req, res, next) => {
+        seq.query('SELECT username FROM customers WHERE username = :username', 
+            { replacements: req.body, type: seq.QueryTypes.SELECT } )
+            .then(results => {
+                const {username} = results[0] || {}
+                if (username === req.body.username) {
+                    return res.status(401).end('Cannot create account, username is already used.')
+                } else {
+                    seq.query('SELECT email FROM customers WHERE email = :email',
+                    { replacements: req.body, type: seq.QueryTypes.SELECT } )
+                    .then(results => {
+                        const {email} = results[0] || {}
+                        if (email === req.body.email) {
+                            return res.status(401).end('Cannot create account, email address is already used.')
+                        } else {
+                            next()
+                        }
+                    })
+                }
+            })
+    },
+
+    createUsers: (req, res) => {
         seq.query( 'INSERT INTO customers (username, fullname, email, phone, address, password) VALUES (:username, :fullname, :email, :phone, :address, :password) ', 
             { replacements: req.body })
-            .then(results => console.log(results) || res.status(201).end('Account successfully created. Thank you for your registration!') )
-            .catch(error => console.log(error) || res.status(400).end('Invalid data') )
+            .then(res.status(201).end('Account successfully created. Thank you for your registration!') )
+            .catch(res.status(401).end('Error') )
     },
     
     getCustomers: (req, res) => 
@@ -112,14 +125,6 @@ module.exports = {
             next()
         }
     }),
-
-    verifyUserAndMail: (req, res, next) => {
-        const { username } = req.body;
-        const foundUser = seq.query('SELECT email FROM customers WHERE username = ":username"', 
-            { type: seq.QueryTypes.SELECT } )
-            .then(results => console.log(results) || res.status(200).end('lll'))
-            .catch(error => console.log(error) || res.status(400).end('Invalid user.') )
-    },
 
     loginUser: (req, res) => {
         const token = jwt.sign( req.user, mySignature );
