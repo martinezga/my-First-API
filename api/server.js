@@ -1,4 +1,4 @@
-const { createProduct, getProducts, getProductById, updateProducts, deleteProducts, verifyUserAndMail, validateUserAndPass,  modifyProducts, createUsers, getCustomers, loginUser, authenticateUser} = require('./functions');
+const { createProduct, getProducts, getProductById, updateProduct, deleteProduct, verifyUserAndMail, createUser, getUsers, updateUser, validateUserAndPass, loginUser, authenticateUser, authenticateAdmin} = require('./functions');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -11,35 +11,35 @@ app.get('/', (req, res) => {
     res.send('Welcome to my API')
 });
 
-app.post('/products', createProduct);/*admin*/
+app.post('/products', createProduct);/*authenticateAdmin*/
 
 app.get('/products', getProducts);
 
 app.get('/products/:productId', getProductById);
 
-app.put('/products/:productId', updateProducts);/*admin*/
+app.put('/products/:productId', updateProduct);/*authenticateAdmin*/
 
-app.delete('/products/:productId', deleteProducts)/*admin*/
+app.delete('/products/:productId', deleteProduct)/*authenticateAdmin*/
 
-app.post('/customers', verifyUserAndMail, createUsers);//hasta aqui
+app.post('/customers', verifyUserAndMail, createUser);
 
-app.get('/customers', getCustomers);/*admin*/
+app.get('/customers', getUsers);/*authenticateAdmin*/
 
-//app.put('/customers/:email', modifyUsers);/*updateUsers*/
+app.put('/customers/:email', authenticateUser, updateUser);/*authenticateUser*/
 
 app.post('/login', validateUserAndPass, loginUser);
 
-app.post('/verfied', authenticateUser, (req, res) => {
+app.post('/verified', authenticateUser, (req, res) => {
     res.send('autenticado')
 })
+//hasta aqui
+//app.post('/orders', createOrder)/*authenticateUser*/
 
-//app.post('/orders', createOrders)
+//app.get('/orders', getOrders)/*authenticateAdmin*/
 
-//app.get('/orders', getOrders)/*admin*/
+//app.get('/orders/:orderId', getOrderById)/*authenticateUser*/
 
-//app.get('/orders/:orderId', getOrdersById)
-
-//app.put('/orders/:orderId', updateStatus) /*admin*/
+//app.put('/orders/:orderId', updateStatus) /*authenticateAdmin*/
 
 app.get('/error', (req, res) => {
     res.status(500);

@@ -6,7 +6,7 @@ CREATE TABLE customers (
     phone INT NOT NULL, 
     address VARCHAR (128) NOT NULL, 
     password CHAR (32) NOT NULL, 
-    userRole VARCHAR (32) NULL
+    userRole BOOLEAN NOT NULL DEFAULT FALSE
 );
 CREATE TABLE products(
     productId INT PRIMARY KEY AUTO_INCREMENT,
