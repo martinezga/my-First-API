@@ -1,4 +1,4 @@
-const { createProduct, getProducts, getProductById, updateProduct, deleteProduct, verifyUserAndMail, createUser, getUsers, updateUser, validateUserAndPass, loginUser, authenticateUser, authenticateAdmin, createOrder, getOrders, getOrderDetails, getOrderByUserId, updateStatusbyOrderId} = require('./functions');
+const { createProduct, getProducts, getProductById, updateProduct, deleteProduct, verifyUserAndMail, createUser, getUsers, updateUser, validateUserAndPass, loginUser, authenticateUser, authenticateAdmin, createOrder, getOrders, getOrderDetails, getOrderByUserId, updateStatusbyOrderId, deleteOrderById} = require('./functions');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -40,10 +40,10 @@ app.get('/orders', getOrders)/*authenticateAdmin*/
 app.get('/ordersDetails', getOrderDetails)
 
 app.get('/orders/:userId', getOrderByUserId)/*authenticateUser*/
-//hasta aqui
+
 app.put('/orders/:orderId', updateStatusbyOrderId) /*authenticateAdmin*/
 
-//app.delete('/orders/:orderId', deleteOrderById) /*authenticateAdmin*/
+app.delete('/orders/:orderId', deleteOrderById) /*authenticateAdmin*/
 
 app.get('/error', (req, res) => {
     res.status(500);
