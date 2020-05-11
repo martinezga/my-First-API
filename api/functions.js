@@ -91,12 +91,12 @@ module.exports = {
             .catch( error => res.status(400).end('Invalid data') )
     },
        
-    validateUserAndPass: (req, res, next) => seq.query('SELECT username, password, userRole FROM customers WHERE username = :username', 
+    validateUserAndPass: (req, res, next) => seq.query('SELECT userId, username, password, userRole FROM customers WHERE username = :username', 
         { replacements: req.body, type: seq.QueryTypes.SELECT })
         .then(results => {
-            const { username, password, userRole } = results[0]
+            const { userId, username, password, userRole } = results[0]
             if(password === req.body.password) {
-                req.user = { username, userRole }
+                req.user = { userId, username, userRole }
                 next()
             } else {
                 res.status(401).json({ error: 'Invalid data'})
@@ -105,20 +105,23 @@ module.exports = {
         .catch( error => res.status(401).json({ error: 'Invalid data'}) ),
 
     loginUser: (req, res) => {
-        console.log(req.user)
         const token = jwt.sign( req.user, mySignature );
         return res.json({ token })
     },
+
     authenticateUser: (req, res, next) => {
         try {
             const token = req.headers.authorization.split(' ')[1];
             const user = jwt.verify(token, mySignature);
+            req.user = user;
+            //console.log(user.userId)
             return next()
         }
         catch(err) {
             res.status(401).json({ error: 'Error'})
         }
     },
+
     authenticateAdmin: (req, res, next) => {
         try {
             const token = req.headers.authorization.split(' ')[1];
@@ -131,10 +134,47 @@ module.exports = {
                 res.status(401).json({ error: 'Access denied'})
             }
         }
-        catch(err) {
+        catch(error) {
             res.status(401).json({ error: 'Access denied'})
         }
     },
+
     createOrder: (req, res) => {
+        seq.query( ' INSERT INTO orders (userId, paymentType, date, time) VALUES (:userId, :paymentType, :date, :time) ', 
+            { replacements: req.body })
+            .then(results => {
+                const orderId = results[0]
+                const {productId, quantity} = req.body;
+                for(let i = 0; i < productId.length; i++) {
+                    seq.query( 'INSERT INTO ordersDetails (orderId, productId, quantity) VALUES (:orderId, :productId, :quantity)',
+                        { replacements: {orderId: orderId, productId: productId[i], quantity: quantity[i]}} )
+                        .then( res.status(201).end('Order successfully created.') )
+                        .catch( res.status(400).end('Error') )
+                }
+            })
     },
+
+    getOrders: (req, res) => {
+        seq.query('SELECT orders.orderStatus, orders.time, orders.orderId, products.productName, ordersDetails.quantity, orders.paymentType, customers.username, customers.address FROM orders JOIN ordersDetails ON orders.orderId = ordersDetails.orderId JOIN products ON ordersDetails.productId = products.productId JOIN customers ON orders.userId = customers.userId', 
+            { type: seq.QueryTypes.SELECT })
+        .then(rows => res.status(200).json(rows))
+    },
+
+    getOrderDetails: (req, res) => {
+        seq.query('SELECT * FROM ordersDetails', { type: seq.QueryTypes.SELECT })
+        .then(rows => res.status(200).json(rows))
+    },
+
+    getOrderByUserId: (req, res) => {
+        seq.query('SELECT orders.orderStatus, orders.time, orders.orderId, products.productName, ordersDetails.quantity, orders.paymentType, customers.username FROM orders JOIN ordersDetails ON orders.orderId = ordersDetails.orderId JOIN products ON ordersDetails.productId = products.productId JOIN customers ON orders.userId = customers.userId WHERE orders.userId = :userId', 
+            { replacements: req.params ,type: seq.QueryTypes.SELECT })
+        .then(rows => res.status(200).json(rows))
+    },
+
+    updateStatusbyOrderId: (req, res) => {
+        seq.query('UPDATE orders SET orderStatus = :orderStatus WHERE orderId = :orderId', 
+            { replacements: {orderStatus: req.body.orderStatus, orderId: req.params.orderId} })
+        .then(res.status(201).end('Order status successfully updated'))
+    },
+
 }

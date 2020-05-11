@@ -17,9 +17,10 @@ CREATE TABLE products(
 CREATE TABLE orders(
     orderId INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     userId INT NOT NULL,
-    orderStatus VARCHAR(64) NOT NULL,
-    orderTime TIMESTAMP NOT NULL,
+    orderStatus ENUM('Confirmed', 'Preparing', 'Sending', 'Delivered') NOT NULL DEFAULT 'Confirmed',
     paymentType VARCHAR(64) NOT NULL,
+    date DATE NOT NULL,
+    time TIME NOT NULL,
     FOREIGN KEY(userId) REFERENCES customers(userId)
 );
 CREATE TABLE ordersDetails(

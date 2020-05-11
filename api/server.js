@@ -1,4 +1,4 @@
-const { createProduct, getProducts, getProductById, updateProduct, deleteProduct, verifyUserAndMail, createUser, getUsers, updateUser, validateUserAndPass, loginUser, authenticateUser, authenticateAdmin} = require('./functions');
+const { createProduct, getProducts, getProductById, updateProduct, deleteProduct, verifyUserAndMail, createUser, getUsers, updateUser, validateUserAndPass, loginUser, authenticateUser, authenticateAdmin, createOrder, getOrders, getOrderDetails, getOrderByUserId, updateStatusbyOrderId} = require('./functions');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -32,14 +32,18 @@ app.post('/login', validateUserAndPass, loginUser);
 app.post('/verified', authenticateUser, (req, res) => {
     res.send('autenticado')
 })
+
+app.post('/orders', authenticateUser, createOrder)/*authenticateUser*/
+
+app.get('/orders', getOrders)/*authenticateAdmin*/
+//de prueba:
+app.get('/ordersDetails', getOrderDetails)
+
+app.get('/orders/:userId', getOrderByUserId)/*authenticateUser*/
 //hasta aqui
-//app.post('/orders', createOrder)/*authenticateUser*/
+app.put('/orders/:orderId', updateStatusbyOrderId) /*authenticateAdmin*/
 
-//app.get('/orders', getOrders)/*authenticateAdmin*/
-
-//app.get('/orders/:orderId', getOrderById)/*authenticateUser*/
-
-//app.put('/orders/:orderId', updateStatus) /*authenticateAdmin*/
+//app.delete('/orders/:orderId', deleteOrderById) /*authenticateAdmin*/
 
 app.get('/error', (req, res) => {
     res.status(500);
