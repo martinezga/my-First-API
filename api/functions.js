@@ -25,6 +25,19 @@ module.exports = {
             .then(results => res.status(200).json(results[0]))
             .catch(error => res.status(400).end('Error')),
     
+    verifyProductId: (req, res, next) => {
+        seq.query('SELECT productId FROM products WHERE productId = :productId',
+            { replacements: req.params, type: seq.QueryTypes.SELECT })
+            .then(results => {
+                if(results[0] === undefined) {
+                    res.status(400).end('Invalid Product ID ')
+                } else {
+                    next()
+                }
+            })
+            .catch(error => res.status(400).end('Error'))
+    },
+    
     getProductById: (req, res) => {
         seq.query('SELECT * FROM products WHERE productId = :productId ', 
             { replacements: req.params, type: seq.QueryTypes.SELECT })
@@ -82,12 +95,19 @@ module.exports = {
             .catch(error => res.status(400).end('Error')),
     
     updateUser:(req, res) => {
-        seq.query('UPDATE customers SET fullname = :fullname, phone = :phone, address = :address WHERE email = :email ', 
-            { replacements: { email: req.params.email, fullname: req.body.fullname, phone: req.body.phone, address: req.body.address } })
-            .then(results => res.status(201).json('Full name, phone and address successfully updated') )
-            .catch( error => res.status(400).end('Invalid data') )
+        seq.query('SELECT email FROM customers WHERE email = :email ', 
+            { replacements: req.params, type: seq.QueryTypes.SELECT })
+            .then(results => {
+                const {email} = results[0] || {};
+                if (email === req.params.email) {
+                    seq.query('UPDATE customers SET fullname = :fullname, phone = :phone, address = :address WHERE email = :email ',
+                        { replacements: { email: req.params.email, fullname: req.body.fullname, phone: req.body.phone, address: req.body.address } })
+                        .then(results => res.status(201).json('Full name, phone and address successfully updated') )
+                } else {return res.status(401).end('Invalid email')}
+            } )
+            .catch( error => res.status(400).end('Error') )
     },
-       
+      
     validateUserAndPass: (req, res, next) => seq.query('SELECT userId, username, password, userRole FROM customers WHERE username = :username', 
         { replacements: req.body, type: seq.QueryTypes.SELECT })
         .then(results => {
@@ -111,11 +131,10 @@ module.exports = {
             const token = req.headers.authorization.split(' ')[1];
             const user = jwt.verify(token, mySignature);
             req.user = user;
-            //console.log(user.userId)
             return next()
         }
         catch(err) {
-            res.status(401).json({ error: 'Error'})
+            res.status(401).json({ error: 'You are not logged in'})
         }
     },
 
@@ -123,7 +142,6 @@ module.exports = {
         try {
             const token = req.headers.authorization.split(' ')[1];
             const user = jwt.verify(token, mySignature);
-            console.log(user.userRole)
             if(user.userRole) {
                 req.user = user;
                 return next()
@@ -138,7 +156,7 @@ module.exports = {
 
     createOrder: (req, res) => {
         seq.query( ' INSERT INTO orders (userId, paymentType, date, time) VALUES (:userId, :paymentType, :date, :time) ', 
-            { replacements: req.body })
+            { replacements: {userId: req.user.userId, paymentType: req.body.paymentType, date: req.body.date, time: req.body.time} })
             .then(results => {
                 const orderId = results[0]
                 const {productId, quantity} = req.body;
@@ -158,15 +176,9 @@ module.exports = {
         .catch(error => res.status(400).end('Error'))
     },
 
-    getOrderDetails: (req, res) => {
-        seq.query('SELECT * FROM ordersDetails', { type: seq.QueryTypes.SELECT })
-        .then(results => res.status(200).json(results))
-        .catch(error => res.status(400).end('Error'))
-    },
-
     getOrderByUserId: (req, res) => {
         seq.query('SELECT orders.orderStatus, orders.time, orders.orderId, products.productName, ordersDetails.quantity, orders.paymentType, customers.username FROM orders JOIN ordersDetails ON orders.orderId = ordersDetails.orderId JOIN products ON ordersDetails.productId = products.productId JOIN customers ON orders.userId = customers.userId WHERE orders.userId = :userId', 
-            { replacements: req.params ,type: seq.QueryTypes.SELECT })
+            { replacements: req.params, type: seq.QueryTypes.SELECT })
         .then(results => res.status(200).json(results))
         .catch(error => res.status(400).end('Error'))
     },
@@ -177,11 +189,15 @@ module.exports = {
         .then(results => res.status(201).end('Order status successfully updated'))
         .catch(error => res.status(400).end('Error'))
     },
-//need to delete products too
+
     deleteOrderById: (req, res) => {
-        seq.query('DELETE FROM orders WHERE orderId = :orderId ',
+        seq.query('DELETE FROM ordersDetails WHERE orderId = :orderId ',
             { replacements: req.params })
-            .then(results => res.status(201).json('Order successfully deleted'))
+            .then(results => {
+                seq.query('DELETE FROM orders WHERE orderId = :orderId', 
+                { replacements: req.params })
+                    .then(results => res.status(201).json('Order successfully deleted'))
+                })
             .catch(error => res.status(400).end('Error'))
     },
 }
