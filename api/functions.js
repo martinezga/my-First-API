@@ -16,7 +16,7 @@ module.exports = {
    createProduct: (req, res) => {
         seq.query( 'INSERT INTO products (productName, price, units) VALUES (:productName, :price, :units) ', 
             { replacements: req.body })
-            .then(results => res.status(201).end('Product successfully created.') )
+            .then(results => res.status(201).json('Product successfully created.') )
             .catch(error => res.status(400).end('Error') )
     },
 
@@ -49,14 +49,14 @@ module.exports = {
         seq.query('UPDATE products SET price = :price, units = :units WHERE productId = :productId ', 
             { replacements: { productId: req.params.productId, price: req.body.price, units: req.body.units } })
             .then(results => res.status(201).json('Price and units successfully updated') )
-            .catch(error => res.status(400).end('Error'))
+            .catch(error => res.status(400).json({error: 'Error'}))
     },
 
     deleteProduct: (req, res) => {
         seq.query('DELETE FROM products WHERE productId = :productId ',
             { replacements: req.params })
             .then(results => res.status(201).json('Product successfully deleted'))
-            .catch(error => res.status(400).end('Error'))
+            .catch(error => res.status(400).json({error: 'Error'}))
     },
 
     verifyUserAndMail: (req, res, next) => {
@@ -181,6 +181,19 @@ module.exports = {
             { replacements: req.params, type: seq.QueryTypes.SELECT })
         .then(results => res.status(200).json(results))
         .catch(error => res.status(400).end('Error'))
+    },
+
+    verifyOrderId: (req, res, next) => {
+        seq.query('SELECT orderId FROM orders WHERE orderId = :orderId',
+            { replacements: req.params, type: seq.QueryTypes.SELECT })
+            .then(results => {
+                if(results[0] === undefined) {
+                    res.status(400).end('Invalid Order ID ')
+                } else {
+                    next()
+                }
+            })
+            .catch(error => res.status(400).end('Error'))
     },
 
     updateStatusbyOrderId: (req, res) => {

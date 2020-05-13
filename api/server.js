@@ -1,4 +1,4 @@
-const { createProduct, getProducts, verifyProductId, getProductById, updateProduct, deleteProduct, verifyUserAndMail, createUser, getUsers, updateUser, validateUserAndPass, loginUser, authenticateUser, authenticateAdmin, createOrder, getOrders, getOrderByUserId, updateStatusbyOrderId, deleteOrderById} = require('./functions');
+const { createProduct, getProducts, verifyProductId, getProductById, updateProduct, deleteProduct, verifyUserAndMail, createUser, getUsers, updateUser, validateUserAndPass, loginUser, authenticateUser, authenticateAdmin, createOrder, getOrders, getOrderByUserId, verifyOrderId, updateStatusbyOrderId, deleteOrderById} = require('./functions');
 
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -11,37 +11,33 @@ app.get('/', (req, res) => {
     res.send('Welcome to my API')
 });
 
-app.post('/products', authenticateAdmin, createProduct);/*authenticateAdmin*/
+app.post('/products', authenticateAdmin, createProduct);
 
 app.get('/products', getProducts);
 
 app.get('/products/:productId', verifyProductId, getProductById);
 
-app.put('/products/:productId', authenticateAdmin, verifyProductId, updateProduct);/*authenticateAdmin*/
+app.put('/products/:productId', authenticateAdmin, verifyProductId, updateProduct);
 
-app.delete('/products/:productId', authenticateAdmin, verifyProductId, deleteProduct)/*authenticateAdmin*/
+app.delete('/products/:productId', authenticateAdmin, verifyProductId, deleteProduct);
 
 app.post('/customers', verifyUserAndMail, createUser);
 
-app.get('/customers', authenticateAdmin, getUsers);/*authenticateAdmin*/
+app.get('/customers', authenticateAdmin, getUsers);
 
-app.put('/customers/:email', authenticateUser, updateUser);/*authenticateUser*/
+app.put('/customers/:email', authenticateUser, updateUser);
 
 app.post('/login', validateUserAndPass, loginUser);
 
-app.post('/verified', authenticateUser, (req, res) => {
-    res.send('autenticado')
-})
+app.post('/orders', authenticateUser, createOrder)
 
-app.post('/orders', authenticateUser, createOrder)/*authenticateUser*/
+app.get('/orders', authenticateAdmin, getOrders);
 
-app.get('/orders', authenticateAdmin, getOrders)/*authenticateAdmin*/
+app.get('/orders/:userId', authenticateUser, getOrderByUserId);
 
-app.get('/orders/:userId', authenticateUser, getOrderByUserId)/*authenticateUser*/
+app.put('/orders/:orderId', authenticateAdmin, verifyOrderId, updateStatusbyOrderId);
 
-app.put('/orders/:orderId', authenticateAdmin, updateStatusbyOrderId) /*authenticateAdmin*/
-
-app.delete('/orders/:orderId', authenticateAdmin, deleteOrderById) /*authenticateAdmin*/
+app.delete('/orders/:orderId', authenticateAdmin, verifyOrderId, deleteOrderById);
 
 app.get('/error', (req, res) => {
     res.status(500);
