@@ -23,7 +23,7 @@ module.exports = {
     getProducts: (req, res) => 
         seq.query('SELECT * FROM products')
             .then(results => res.status(200).json(results[0]))
-            .catch(error => res.status(400).end('Error')),
+            .catch(error => res.status(400).end('An error ocurred')),
     
     verifyProductId: (req, res, next) => {
         seq.query('SELECT productId FROM products WHERE productId = :productId',
@@ -83,7 +83,7 @@ module.exports = {
     },
 
     createUser: (req, res) => {
-        seq.query( 'INSERT INTO customers (username, fullname, email, phone, address, password) VALUES (:username, :fullname, :email, :phone, :address, :password) ', 
+        seq.query( 'INSERT INTO customers (username, fullname, email, phone, address, password, userRole) VALUES (:username, :fullname, :email, :phone, :address, :password, :userRole) ', 
             { replacements: req.body })
             .then(results => res.status(201).end('Account successfully created. Thank you for your registration!') )
             .catch(error => res.status(401).end('Error') )
