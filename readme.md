@@ -41,6 +41,10 @@ Server init
 ```
 **8.** Para probar los endpoints abre Postman, dale al botón 'Importar' y selecciona el archivo 'delilah-resto-endpoints.postman_collection.json'
 
+**9.** Comienza creando un usuario administrador, logueate y copia el token devuelto, sin las comillas, para acceder a otros endpoints.
+
+**10.** Crea uno o tantos productos desees y voilá! Ya puedes crear una orden con los productos que creaste.
+
 ---
 ## A continuación todos los endopoints y que hacen ⚙️
 
@@ -75,10 +79,11 @@ Server init
     "email": "blackpanda@gmail.com",
     "phone": 157445879,
     "address": "True 2588, 1627",
-    "password": "098pa0475ad"
+    "password": "098pa0475ad",
+    "userRole": 1
 }
 ```
-/login --- _De acceso público._ --- Logguea a un usuario.
+/login --- _De acceso público._ --- Devuelve un token necesario para acceder a otros endpoints.
 ```
 {
 	"username": "Black-Pand4",
@@ -134,7 +139,7 @@ _En este proyecto se usó:_
 
 * [Express](https://www.npmjs.com/package/express) - Framework web de node.
 * [Sequelize](https://www.npmjs.com/package/sequelize) - Dependencia para conectar Node con una base de datos.
-* [mysql2](https://www.npmjs.com/package/mysql2) - Dependencia para usar mysql en Node
+* [mysql2](https://www.npmjs.com/package/mysql2) - Dependencia para usar mysql en Node.
 * [Nodemon](https://www.npmjs.com/package/nodemon) - Herramienta que automáticamente reinicia el servidor al hacer cambios.
 * [Swagger](https://swagger.io/) - Herramienta para diseñar la documentación de una API.
 ---
@@ -146,7 +151,7 @@ Puedes encontrar la documentación en: \documentation\index.html
 ## Expresiones de Gratitud 🎁
 
 * Gracias a mis compañeros de curso y mentores de @Acámica y @Globant
-* Si te gustó, comenta a otros sobre este proyecto 📢
+* Si te gustó, coméntalo. 📢
 
 ---
 ⌨️ con ❤️ por [martinezga](https://github.com/martinezga) 😊

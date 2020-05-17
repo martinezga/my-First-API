@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const jwt = require('jsonwebtoken')
 
-const seq = new Sequelize('mysql://Da8Y4VxBu2:ZUr59t4Fgf@remotemysql.com:3306/Da8Y4VxBu2');
+const seq = new Sequelize('mysql://root@localhost:3306/mydb');
 
 seq.authenticate()
     .then(console.log('Connection has been established successfully.')
