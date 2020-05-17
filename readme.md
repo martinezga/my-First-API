@@ -32,7 +32,7 @@ _Sigue este paso a paso para tener un entorno de desarrollo ejecutándose._
 
 **5.** Abre tu terminal y ubícate en la carpeta 'api'
 
-**6.** Ejecuta en el terminal 'npm install' para que puedan correr los módulos usados en este proyecto. Si crees que ya lo tienes instalado verifícalo escribiendo 'npm --version'
+**6.** Ejecuta en el terminal 'npm install' para que puedan correr los módulos o dependencias usados en este proyecto. Si crees que ya lo tienes instalado verifícalo escribiendo 'npm --version'
 
 **7.** Pon en funcionamiento el servidor ejecutando en el terminal 'node server.js'. Si todo salió bien observarás el siguiente mensaje:
 ```
@@ -140,6 +140,7 @@ _En este proyecto se usó:_
 * [Express](https://www.npmjs.com/package/express) - Framework web de node.
 * [Sequelize](https://www.npmjs.com/package/sequelize) - Dependencia para conectar Node con una base de datos.
 * [mysql2](https://www.npmjs.com/package/mysql2) - Dependencia para usar mysql en Node.
+* [JSON Web Token](https://www.npmjs.com/package/jsonwebtoken) - Dependencia que genera un token de acceso seguro.
 * [Nodemon](https://www.npmjs.com/package/nodemon) - Herramienta que automáticamente reinicia el servidor al hacer cambios.
 * [Swagger](https://swagger.io/) - Herramienta para diseñar la documentación de una API.
 ---
